@@ -1,4 +1,8 @@
+import 'package:connectrpc/http2.dart';
+import 'package:connectrpc/protobuf.dart';
+import 'package:connectrpc/protocol/grpc.dart' as grpc;
 import 'package:flutter/material.dart';
+import 'package:mvp_connect/rpc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +60,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final httpClient = createHttpClient();
+    final transport = grpc.Transport(
+      baseUrl: 'http://127.0.0.1:50051',
+      codec: const ProtoCodec(),
+      httpClient: httpClient,
+      statusParser: StatusParser(),
+    );
+    final _ = RPC(transport: transport);
+  }
 
   void _incrementCounter() {
     setState(() {
